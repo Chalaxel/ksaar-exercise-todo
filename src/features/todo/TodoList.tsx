@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input'
 import { Trash2 } from 'lucide-react'
 
 import { useAppSelector, useAppDispatch } from '@/hooks'
-import { add, remove, updateInputValue, TodoItem as TodoItemType } from '@/features/todo/todoSlice'
-import type { RootState } from "@/features/todo/todoSlice"
+import { add, remove, check, updateInputValue } from '@/features/todo/todoSlice'
+import type { RootState , TodoItem as TodoItemType } from '@/features/todo/todoSlice'
 
 const Filters = () => {
   return (
@@ -30,10 +30,13 @@ const TodoItem = ({ item }: {item: TodoItemType}) => {
   const handleRemoveTask = () => {
     dispatch(remove(item.id))
   }
+  const handleCheckTask = () => {
+    dispatch(check(item.id))
+  }
 
   return (
     <div className="h-12 px-3 bg-gray-100 rounded-xl flex justify-between items-center">
-      <Checkbox />
+      <Checkbox checked={item.completed} onCheckedChange={handleCheckTask}/>
       {item.task}
       <Button
         onClick={handleRemoveTask}

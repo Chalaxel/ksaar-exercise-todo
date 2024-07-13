@@ -35,7 +35,15 @@ const todoSlice = createSlice({
     },
     remove: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter((item) => item.id !== action.payload)
-
+      return
+    },
+    check: (state, action: PayloadAction<number>) => {
+      state.items = state.items.map((item) => {
+        if (item.id === action.payload) {
+          item.completed = !item.completed
+        }
+        return item
+      })
       return
     },
     updateInputValue: (state, action: PayloadAction<string>) => {
@@ -44,7 +52,7 @@ const todoSlice = createSlice({
   }
 })
 
-export const { add, remove, updateInputValue } = todoSlice.actions
+export const { add, remove, check, updateInputValue } = todoSlice.actions
 
 export const store = configureStore({
   reducer: {
