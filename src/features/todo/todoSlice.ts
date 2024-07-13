@@ -1,6 +1,11 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice, configureStore } from "@reduxjs/toolkit"
 
+export enum Filter {
+  ALL = 'all',
+  COMPLETED = 'completed',
+  TODO = 'todo'
+}
 
 export interface TodoItem {
   id: number,
@@ -10,13 +15,21 @@ export interface TodoItem {
 interface TodoState {
   items: TodoItem[],
   inputValue: string,
-  uniqueTaskID: number
+  uniqueTaskID: number,
+  filter: Filter
 }
 
 const initialState: TodoState = {
-  items: [],
+  items: [
+    {
+      id: 0,
+      task: 'Faire l\'exercice todo-list',
+      completed: true
+    }
+  ],
   inputValue: '',
-  uniqueTaskID: 0
+  uniqueTaskID: 1,
+  filter: Filter.ALL
 }
 
 const todoSlice = createSlice({
@@ -46,13 +59,22 @@ const todoSlice = createSlice({
       })
       return
     },
+    updateFilter: (state, action: PayloadAction<Filter>) => {
+      state.filter = action.payload
+    },
     updateInputValue: (state, action: PayloadAction<string>) => {
       state.inputValue = action.payload;
     }
   }
 })
 
-export const { add, remove, check, updateInputValue } = todoSlice.actions
+export const {
+  add,
+  remove,
+  check,
+  updateFilter,
+  updateInputValue
+} = todoSlice.actions
 
 export const store = configureStore({
   reducer: {

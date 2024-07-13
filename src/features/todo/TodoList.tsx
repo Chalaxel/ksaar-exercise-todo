@@ -1,23 +1,43 @@
 import type React from "react"
-import { Checkbox } from '@/components/ui/checkbox'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Trash2 } from 'lucide-react'
+import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Trash2 } from "lucide-react"
 
-import { useAppSelector, useAppDispatch } from '@/hooks'
-import { add, remove, check, updateInputValue } from '@/features/todo/todoSlice'
-import type { RootState , TodoItem as TodoItemType } from '@/features/todo/todoSlice'
+import { useAppDispatch, useAppSelector } from "@/hooks"
+import type { RootState, TodoItem as TodoItemType } from "@/features/todo/todoSlice"
+import { add, check, Filter, remove, updateFilter, updateInputValue } from "@/features/todo/todoSlice"
 
 const Filters = () => {
+  const todoFilter = useAppSelector((state: RootState) => state.todo.filter);
+  const dispatch = useAppDispatch();
+  const handleNoFilter = () => {
+    dispatch(updateFilter(Filter.ALL))
+  }
+  const handleCompletedFilter = () => {
+    dispatch(updateFilter(Filter.COMPLETED))
+  }
+  const handleTodoFilter = () => {
+    dispatch(updateFilter(Filter.TODO))
+  }
   return (
     <div className="flex space-x-1 my-4">
-      <Button variant="outline" className="hover:text-primary">
+      <Button
+        onClick={handleNoFilter}
+        variant={todoFilter === Filter.ALL ? "default" : "outline"}
+      >
         Aucun filtre
       </Button>
-      <Button variant="outline" className="hover:text-primary">
+      <Button
+        onClick={handleCompletedFilter}
+        variant={todoFilter === Filter.COMPLETED ? "default" : "outline"}
+      >
         Completé
       </Button>
-      <Button variant="outline" className="hover:text-primary">
+      <Button
+        onClick={handleTodoFilter}
+        variant={todoFilter === Filter.TODO ? "default" : "outline"}
+      >
         A faire
       </Button>
     </div>
@@ -69,13 +89,26 @@ const InputTask = () => {
 }
 
 export const TodoList = () => {
+  const todoFilter = useAppSelector((state: RootState) => state.todo.filter);
   const todo = useAppSelector((state: RootState) => state.todo.items);
   return (
     <div className="h-screen max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h1>Todo List</h1>
+      <h1>Ksaar - Exercice Redux - TODO List</h1>
       <Filters />
       <ul className="space-y-3">
-        {todo.map(item => (
+        {todo
+          .filter(item => {
+            switch (todoFilter) {
+              case Filter.ALL:
+                return true
+              case Filter.COMPLETED:
+                return item.completed
+              case Filter.TODO:
+                return !item.completed
+            }
+            return true
+          })
+          .map(item => (
           <TodoItem key={item.id} item={item} />
         ))}
       </ul>
