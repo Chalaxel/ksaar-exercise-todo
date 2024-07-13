@@ -3,6 +3,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Trash2 } from 'lucide-react'
 
+import { useAppSelector, useAppDispatch } from '@/hooks'
+import { add, remove, updateInputValue } from '@/features/todo/todoSlice'
+import type { RootState } from "@/features/todo/todoSlice"
+import React from "react"
+
 const Filters = () => {
   return (
     <div className="flex space-x-1 my-4">
@@ -32,27 +37,32 @@ const TodoItem = ({ title }: {title: string}) => {
 }
 
 const InputTask = () => {
+  const inputValue = useAppSelector((state: RootState) => state.todo.inputValue);
+  const dispatch = useAppDispatch();
+  const handleAddTask = () => {
+    dispatch(add(inputValue))
+  }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateInputValue(e.target.value));
+  };
+
   return (
     <div className="flex space-x-1 my-4">
-      <Input />
-      <Button>Ajouter</Button>
+      <Input value={inputValue} onChange={handleInputChange} />
+      <Button onClick={handleAddTask}>Ajouter</Button>
     </div>
   )
 }
 
 export const TodoList = () => {
-  const temp_list = [
-    { id: 1, title: "Todo 1", completed: false },
-    { id: 2, title: "Todo 2", completed: false },
-    { id: 3, title: "Todo 3", completed: false },
-  ]
+  const todo = useAppSelector((state: RootState) => state.todo.items);
   return (
     <div className="h-screen max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
       <h1>Todo List</h1>
       <Filters />
       <ul className="space-y-3">
-        {temp_list.map(todo => (
-          <TodoItem key={todo.id} title={todo.title} />
+        {todo.map(todo => (
+          <TodoItem key={todo.id} title={todo.task} />
         ))}
       </ul>
       <InputTask />
