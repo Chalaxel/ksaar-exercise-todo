@@ -82,8 +82,15 @@ const InputTask = () => {
 
   return (
     <div className="flex space-x-1 my-4">
-      <Input value={inputValue} onChange={handleInputChange} />
-      <Button onClick={handleAddTask}>Ajouter</Button>
+      <Input
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={(e) => {
+          if (e.key === "Enter")
+            handleAddTask();
+        }}
+      />
+      <Button onClick={handleAddTask} >Ajouter</Button>
     </div>
   )
 }
