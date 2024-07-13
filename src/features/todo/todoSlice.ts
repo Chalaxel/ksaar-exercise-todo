@@ -2,7 +2,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice, configureStore } from "@reduxjs/toolkit"
 
 
-interface TodoItem {
+export interface TodoItem {
   id: number,
   task: string,
   completed: boolean
@@ -23,18 +23,19 @@ const todoSlice = createSlice({
   name: 'todo',
   initialState,
   reducers: {
-    add: (state, newTask) => {
-      console.log(state.items)
+    add: (state, action: PayloadAction<string>) => {
       const newTodoItem: TodoItem = {
         id: state.uniqueTaskID++,
-        task: newTask.payload,
+        task: action.payload,
         completed: false
       }
       state.items.push(newTodoItem)
       state.inputValue = ''
       return
     },
-    remove: (state, index) => {
+    remove: (state, action: PayloadAction<number>) => {
+      state.items = state.items.filter((item) => item.id !== action.payload)
+
       return
     },
     updateInputValue: (state, action: PayloadAction<string>) => {

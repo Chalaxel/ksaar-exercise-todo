@@ -1,12 +1,12 @@
+import type React from "react"
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Trash2 } from 'lucide-react'
 
 import { useAppSelector, useAppDispatch } from '@/hooks'
-import { add, remove, updateInputValue } from '@/features/todo/todoSlice'
+import { add, remove, updateInputValue, TodoItem as TodoItemType } from '@/features/todo/todoSlice'
 import type { RootState } from "@/features/todo/todoSlice"
-import React from "react"
 
 const Filters = () => {
   return (
@@ -24,12 +24,23 @@ const Filters = () => {
   )
 }
 
-const TodoItem = ({ title }: {title: string}) => {
+const TodoItem = ({ item }: {item: TodoItemType}) => {
+  const dispatch = useAppDispatch();
+
+  const handleRemoveTask = () => {
+    dispatch(remove(item.id))
+  }
+
   return (
     <div className="h-12 px-3 bg-gray-100 rounded-xl flex justify-between items-center">
       <Checkbox />
-      {title}
-      <Button variant="outline" size="icon" className="hover:text-destructive">
+      {item.task}
+      <Button
+        onClick={handleRemoveTask}
+        variant="outline"
+        size="icon"
+        className="hover:text-destructive"
+      >
         <Trash2 className="h-4 w-4" />
       </Button>
     </div>
@@ -61,8 +72,8 @@ export const TodoList = () => {
       <h1>Todo List</h1>
       <Filters />
       <ul className="space-y-3">
-        {todo.map(todo => (
-          <TodoItem key={todo.id} title={todo.task} />
+        {todo.map(item => (
+          <TodoItem key={item.id} item={item} />
         ))}
       </ul>
       <InputTask />
